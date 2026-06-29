@@ -1,0 +1,35 @@
+{
+  "eval_id": "uuid-v4 shared across the run",
+  "item_id": "sample_fibonacci",
+  "judge_model": "mlx-community/Meta-Llama-3-8B-Instruct-4bit",
+  "hardware_env": {
+    "platform": "macOS-...",
+    "machine": "arm64",
+    "processor": "arm",
+    "mac_version": "15.x",
+    "python_version": "3.x"
+  },
+  "generation_config": {
+    "max_tokens": 256,
+    "temperature": 0.0,
+    "seed": 42
+  },
+  "prompt_template_id": "pairwise_judge_v1",
+  "order": "ab | ba",
+  "inputs": {
+    "model_a_id": "id occupying Assistant A in this call",
+    "model_b_id": "id occupying Assistant B in this call",
+    "instruction": "...",
+    "response_a": "assistant A text in this call",
+    "response_b": "assistant B text in this call",
+    "metadata": {}
+  },
+  "outputs": {
+    "raw_generation": "judge rationale ending with [[A]], [[B]], or [[Tie]]",
+    "parsed_position_winner": "A | B | tie | unknown",
+    "parsed_original_winner": "model_a | model_b | tie | unknown"
+  },
+  "timing": {
+    "latency_s": 0.123456
+  }
+}
