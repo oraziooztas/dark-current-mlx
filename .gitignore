@@ -3,4 +3,10 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .ruff_cache/
-results/
+results/*
+!results/llama3_8b_4bit_minislice_v0.jsonl
+!results/llama3_8b_4bit_minislice_v0_summary.json
+!results/mistral7b_v03_4bit_minislice_v0.jsonl
+!results/mistral7b_v03_4bit_minislice_v0_summary.json
+!results/qwen2_7b_4bit_minislice_v0.jsonl
+!results/qwen2_7b_4bit_minislice_v0_summary.json

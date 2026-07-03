@@ -8,8 +8,7 @@ dependencies = []
 
 [project.optional-dependencies]
 mlx = [
-    "mlx>=0.14.0",
-    "mlx-lm>=0.14.0"
+    "mlx-lm>=0.31"
 ]
 dev = []
 

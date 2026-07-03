@@ -1,0 +1,89 @@
+{
+  "total_calls": 24,
+  "total_items": 12,
+  "unknown_calls": 0,
+  "swap_consistent_items": 7,
+  "swap_inconsistent_items": 5,
+  "dark_current_score": 0.416667,
+  "usage_totals": {
+    "calls_with_usage": 24,
+    "prompt_tokens": 4820,
+    "generation_tokens": 1508,
+    "total_latency_s": 71.316,
+    "truncated_calls": 0
+  },
+  "pair_details": [
+    {
+      "item_id": "gap_capital_france",
+      "ab": "A",
+      "ba": "B",
+      "swap_consistent": true
+    },
+    {
+      "item_id": "gap_email_apology",
+      "ab": "B",
+      "ba": "A",
+      "swap_consistent": true
+    },
+    {
+      "item_id": "gap_math_percent",
+      "ab": "A",
+      "ba": "B",
+      "swap_consistent": true
+    },
+    {
+      "item_id": "gap_python_reverse",
+      "ab": "B",
+      "ba": "A",
+      "swap_consistent": true
+    },
+    {
+      "item_id": "id_capital_japan",
+      "ab": "A",
+      "ba": "A",
+      "swap_consistent": false
+    },
+    {
+      "item_id": "id_haiku_autumn",
+      "ab": "tie",
+      "ba": "tie",
+      "swap_consistent": true
+    },
+    {
+      "item_id": "id_sql_select",
+      "ab": "tie",
+      "ba": "tie",
+      "swap_consistent": true
+    },
+    {
+      "item_id": "id_water_boiling",
+      "ab": "A",
+      "ba": "A",
+      "swap_consistent": false
+    },
+    {
+      "item_id": "para_coffee_tip",
+      "ab": "A",
+      "ba": "B",
+      "swap_consistent": true
+    },
+    {
+      "item_id": "para_hello_world",
+      "ab": "A",
+      "ba": "A",
+      "swap_consistent": false
+    },
+    {
+      "item_id": "para_photosynthesis",
+      "ab": "A",
+      "ba": "tie",
+      "swap_consistent": false
+    },
+    {
+      "item_id": "para_todo_priority",
+      "ab": "tie",
+      "ba": "B",
+      "swap_consistent": false
+    }
+  ]
+}

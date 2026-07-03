@@ -31,5 +31,13 @@
   },
   "timing": {
     "latency_s": 0.123456
+  },
+  "usage": {
+    "prompt_tokens": 310,
+    "generation_tokens": 142,
+    "prompt_tps": 250.0,
+    "generation_tps": 28.5,
+    "peak_memory_gb": 5.1,
+    "finish_reason": "stop | length (null for mock runs)"
   }
 }

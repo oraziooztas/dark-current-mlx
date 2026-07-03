@@ -63,6 +63,7 @@ def run_items(
             raw_generation = runner.generate(call.prompt, generation_config)
             latency_s = time.perf_counter() - started
             verdict = extract_verdict(raw_generation)
+            usage = getattr(runner, "last_usage", None)
 
             records.append(
                 {
@@ -89,6 +90,7 @@ def run_items(
                     "timing": {
                         "latency_s": round(latency_s, 6),
                     },
+                    "usage": usage,
                 }
             )
 
@@ -133,7 +135,25 @@ def summarize_records(records: list[dict[str, Any]]) -> dict[str, Any]:
         "swap_consistent_items": evaluated_pairs - inconsistent_pairs,
         "swap_inconsistent_items": inconsistent_pairs,
         "dark_current_score": round(score, 6),
+        "usage_totals": _usage_totals(records),
         "pair_details": pair_details,
+    }
+
+
+def _usage_totals(records: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Aggregate budget-aware stats over calls that reported usage."""
+
+    with_usage = [record["usage"] for record in records if record.get("usage")]
+    if not with_usage:
+        return None
+    return {
+        "calls_with_usage": len(with_usage),
+        "prompt_tokens": sum(usage["prompt_tokens"] for usage in with_usage),
+        "generation_tokens": sum(usage["generation_tokens"] for usage in with_usage),
+        "total_latency_s": round(
+            sum(record["timing"]["latency_s"] for record in records if record.get("usage")), 3
+        ),
+        "truncated_calls": sum(1 for usage in with_usage if usage.get("finish_reason") == "length"),
     }
 
 
