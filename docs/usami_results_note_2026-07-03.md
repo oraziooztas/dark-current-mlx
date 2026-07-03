@@ -1,4 +1,4 @@
-# Dark Current MLX Pilot - Results Note (draft 2026-07-03, not sent)
+# Dark Current MLX Pilot - Results Note (2026-07-03)
 
 Hi Professor Usami,
 
@@ -7,7 +7,7 @@ I ran the first real mini-slice on the local MLX harness while waiting on your p
 ## Setup
 
 - Repo: https://github.com/oraziooztas/dark-current-mlx
-- Commit: FILL_AT_SEND_TIME
+- Commit: d8ad553
 - Machine: MacBook Pro (Apple M3 Pro, 18 GB), Python 3.12.13, mlx-lm 0.31.3
 - Judges: mlx-community 4-bit builds of Meta-Llama-3-8B-Instruct, Mistral-7B-Instruct-v0.3, Qwen2-7B-Instruct
 - Prompt template: `pairwise_judge_v1`
