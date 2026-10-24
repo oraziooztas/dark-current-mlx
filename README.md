@@ -21,7 +21,8 @@ laptop:
 - treat a judge as *consistent* only if it flips `A → B`, flips `B → A`, and keeps `Tie → Tie`;
 - record hardware, prompt template, seed, and generation config alongside every call;
 - aggregate a strict `dark_current_score` = fraction of items where the judge was *not*
-  order-invariant.
+  order-invariant (strict: an item with an unparseable verdict counts too, so the Results
+  below report order-dependent and unparseable items separately).
 
 ## Results
 
@@ -34,29 +35,36 @@ three conditions: `clear_gap` (one answer plainly better, better side balanced 2
 `identical` (byte-identical answers — any A/B pick is pure position signal), `paraphrase`
 (same content, different wording). 12 items × 2 orders = 24 judge calls per model.
 
-| Judge (4-bit MLX) | clear_gap | identical | paraphrase | **overall** | gen tokens | wall |
-|---|---:|---:|---:|---:|---:|---:|
-| Meta-Llama-3-8B-Instruct | 0.25* | 0.25 | 0.50 | **0.333** | 4,459 | 170 s |
-| Mistral-7B-Instruct-v0.3 | 0.00 | 0.00 | 1.00 | **0.333** | 2,725 | 106 s |
-| Qwen2-7B-Instruct | 0.00 | 0.50 | 0.75 | **0.417** | 1,508 | 71 s |
+| Judge (4-bit MLX) | clear_gap | identical | paraphrase | **order-dependent** | unparseable | strict score | gen tokens | wall |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Meta-Llama-3-8B-Instruct | 0/4 | 1/4 | 2/4 | **3/12 (0.250)** | 1 | 0.333 | 4,459 | 170 s |
+| Mistral-7B-Instruct-v0.3 | 0/4 | 0/4 | 3/4 | **3/12 (0.250)** | 1 | 0.333 | 2,725 | 106 s |
+| Qwen2-7B-Instruct | 0/4 | 2/4 | 3/4 | **5/12 (0.417)** | 0 | 0.417 | 1,508 | 71 s |
 
-Cells are per-condition dark current (fraction of items whose verdict pair is not
-order-invariant). *Llama's `clear_gap` miss is one call that answered correctly in prose but
-skipped the strict `[[B]]` marker (parsed as unknown), not a position flip.
+Condition cells count *order-dependent* items: both verdicts parsed, and the verdict changed
+with the A/B order. *Unparseable* items have one call without the strict marker, and neither
+call was truncated: Llama-3 answered a `clear_gap` item correctly in prose but skipped `[[B]]`;
+Mistral wrote `[Tie]` with single brackets on a paraphrase item it had called a tie in the other
+order. The *strict score* is the `dark_current_score` the CLI summary reports, which counts
+unparseable items as not order-invariant (it was this README's headline number until
+2026-10-24).
 
 What the aggregate score hides:
 
-- **All three judges read a real quality signal well**: parsed `clear_gap` verdicts picked the
-  objectively better answer in both orders 11/12 times.
+- **All three judges read a real quality signal well**: no order-dependent `clear_gap` item, and
+  the parsed `clear_gap` verdicts picked the objectively better answer in both orders 11/12
+  times (the twelfth is Llama-3's unparseable call).
 - **Position bias appears exactly where the signal disappears, with a different signature per
-  judge**: Llama-3 drifts toward slot A even on byte-identical pairs; Mistral is flawless until
-  answers are merely *equivalent*, then slot-locks on 4/4 paraphrase items; Qwen2 slot-locks on
-  2/4 identical pairs.
-- **Same aggregate, different pathology**: Llama-3 and Mistral share the same overall score
-  (0.333) while failing in different conditions — the case for per-condition breakdowns over a
-  single number.
+  judge**: Llama-3 picks slot A in both orders on 1/4 identical and 2/4 paraphrase items;
+  Mistral is order-invariant until answers are merely *equivalent*, then order-dependent on 3/4
+  paraphrase items; Qwen2 picks slot A in both orders on 2/4 identical items and is
+  order-dependent on 3/4 paraphrases.
+- **Same aggregate, different pathology**: Llama-3 and Mistral share the same score (3/12
+  order-dependent) while failing in different conditions — the case for per-condition
+  breakdowns over a single number.
 
-Reproduce the breakdown: `python3 scripts/category_breakdown.py results/*_minislice_v0.jsonl`.
+Reproduce the breakdown (order-invariant / order-dependent / unparseable per condition, plus
+the strict score): `python3 scripts/category_breakdown.py results/*_minislice_v0.jsonl`.
 Full per-call records (hardware metadata, generation config, usage stats, raw generations,
 parsed verdicts) are committed under [`results/`](results/).
 
@@ -164,7 +172,7 @@ src/dark_current_mlx/
 eval_pipeline.py        # backward-compatible entry point (no install needed)
 data/sample_pairwise.jsonl   # 2-item dry-run sample
 data/minislice_v0.jsonl      # 12-item mini-slice (clear_gap / identical / paraphrase)
-scripts/category_breakdown.py  # per-condition dark current from run JSONL
+scripts/category_breakdown.py  # per-condition order-dependent / unparseable split from run JSONL
 schema.json             # output record shape
 tests/                  # 8 offline unit tests (no network / no MLX / no downloads)
 docs/                   # results-note template + drafts
@@ -184,15 +192,18 @@ that is why the whole suite runs in well under a second with zero downloads.
 | Offline test suite (8 tests) | ✅ done |
 | Real MLX judge run on a mini-slice (3 open judges, fixed seed) | ✅ done (see Results) |
 | Budget-aware usage fields (tokens, tps, peak memory, finish reason) | ✅ done (scaffold/routing dimensions planned) |
-| Compact results note for the paper authors | ✍️ drafted (`docs/`) |
+| Order-dependent vs unparseable split | ✅ in `scripts/category_breakdown.py`; 🔜 in the CLI summary |
+| Compact results note for the paper authors | ✅ sent 2026-07-03 (draft in `docs/`) |
 | Paper-aligned benchmark adapter (MT-Bench / AlpacaEval-style) | 🔜 planned |
 
 ## Scope & attribution
 
 Inspired by *"LLM Judges Have Dark Current: A Psychometric Datasheet for LLM-as-a-Judge
 Evaluation"* (Usami et al.). This is an **independent pilot** exploring local reproducibility
-on Apple Silicon. It is **not affiliated with or endorsed by the authors** and does **not**
-reproduce the paper's full results. No proprietary API calls are used anywhere in the pipeline.
+on Apple Silicon. It is **not endorsed by the authors** and does **not** reproduce the paper's
+full results. The authors acknowledge it in the README of their revised repository,
+[`dark-current-v2-review`](https://github.com/usamihiroyasu/dark-current-v2-review). No
+proprietary API calls are used anywhere in the pipeline.
 
 ## License
 

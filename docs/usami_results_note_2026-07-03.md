@@ -1,5 +1,7 @@
 # Dark Current MLX Pilot - Results Note (2026-07-03)
 
+> **Update 2026-10-24.** The `overall` column below is the strict score: it counts the two unparseable calls (one Llama-3, one Mistral) as order flips. Counting order-dependent items only, the three judges score 0.250 / 0.250 / 0.417. Current numbers and the split: [README](../README.md#results).
+
 Hi Professor Usami,
 
 I ran the first real mini-slice on the local MLX harness while waiting on your preferred benchmark slice. Three open-weight judges, fully local, deterministic config.
