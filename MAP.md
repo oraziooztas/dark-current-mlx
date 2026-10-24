@@ -15,11 +15,11 @@ Dimostrare la riproducibilita' locale della valutazione di giudici LLM open-sour
 - `src/dark_current_mlx/{models,prompts,dataset}.py`: dataclass, template prompt, loader JSONL.
 - `data/sample_pairwise.jsonl`: mini dataset locale per dry run.
 - `data/minislice_v0.jsonl`: mini-slice 12 item in 3 condizioni (clear_gap/identical/paraphrase).
-- `scripts/category_breakdown.py`: breakdown dark current per condizione dai run JSONL.
+- `scripts/category_breakdown.py`: per condizione, item order-invariant / order-dependent / non parsabili dai run JSONL, più lo score strict.
 - `schema.json`: shape del record JSONL prodotto (incluso blocco `usage`).
 - `tests/`: unit test offline (8), senza modelli o download.
 - `docs/usami_results_note_template.md`: template della results note per gli autori.
-- `docs/usami_results_note_2026-07-03.md`: bozza results note run 02-03/07 (NON inviata; /humanizer prima dell'invio).
+- `docs/usami_results_note_2026-07-03.md`: bozza della results note run 02-03/07, inviata a Usami il 03/07 (versione /humanizer). La colonna `overall` è lo score strict: lo split è nel README.
 - `results/`: output delle run. Gitignored TRANNE i 6 file delle run mini-slice v0 (3 judge × records+summary), committati come evidenza dei numeri nel README.
 
 ## Comandi
